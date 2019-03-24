@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name myUserJS
-// @description Мой самый первый юзерскрипт 
-// @author Vasya Pupkin
+// @name jiraGoods
+// @description Мой самый первый юзерскрипт
+// @author Andrey
 // @license MIT
 // @version 1.0
 // @include https://jira.goods.ru/*
 // ==/UserScript==
 // [1] Оборачиваем скрипт в замыкание, для кроссбраузерности (opera, ie)
-(function (window, undefined) {  // [2] нормализуем window
+(function (window, undefined) {
     var w;
     if (typeof unsafeWindow != undefined) {
         w = unsafeWindow
@@ -28,6 +28,24 @@
     // [4] дополнительная проверка наряду с @include
     if (/https:\/\/jira.goods.ru/.test(w.location.href)) {
         //Ниже идёт непосредственно код скрипта
-        alert("Userscripts приветствует вас навязчивым окном.");
+        const redoFn = () => {
+        const transitions = document.querySelector("#activitymodule");
+        const details = document.querySelector('#issuedetails');
+        let isRedo = false;
+        let redoEl;
+        transitions.querySelectorAll(".jira-issue-status-lozenge").forEach(dom => {
+            if (dom.textContent === "REDO") {
+            isRedo = true;
+                redoEl = dom;
+            }
+        });
+            if (isRedo && transitions) {
+            var li = document.createElement('li');
+            li.className = "item";
+            li.innerHTML = "<div clas='wrap'><strong class='name'>REDO</strong><span class=' jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-yellow jira-issue-status-lozenge-indeterminate jira-issue-status-lozenge-max-width-medium'>REDO</span></div>";
+            details.appendChild(li);
+        }
+        }
+        redoFn();
     }
 })(window);
